@@ -1,0 +1,216 @@
+body {
+  overflow-x: hidden;
+  background-color: rgb(249, 249, 249);
+  margin: 0px;
+}
+
+.container {
+  min-height: 800px;
+  width: 100%;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+
+.topContainer {
+  background-color: #1671f0;
+  width: 100%;
+  height: 166px;
+  padding-left: 30px;
+  display: flex;
+  align-items: center;
+}
+
+.photograph {
+  object-fit: cover;
+  width: 88px;
+  height: 118px;
+  background-color: #000;
+  border: 9px solid #ffffff;
+}
+
+.textContainer {
+  padding: 18px 20px;
+  align-self: baseline;
+  color: #fff;
+}
+
+.textContainer p:nth-child(2) {
+  margin: -7px 0px;
+}
+
+.smallText {
+  font-size: 0.88em;
+  padding-left: 10px;
+}
+
+.dataContainer {
+  margin: -9px 0px 0px 25px;
+  align-self: baseline;
+}
+
+.dataContainer h3 {
+  color: rgb(146, 150, 156);
+  font-weight: 500;
+  font-size: 1.13em;
+}
+
+.timeDate {
+  margin: -18px 0px;
+}
+
+#date {
+  display: inline-block;
+  font-size: 1.75em;
+  font-weight: 500;
+}
+
+#time {
+  margin-left: 15px;
+  font-family: "Roboto-Bold", "Roboto Bold", "Roboto", sans-serif;
+  font-size: 36px;
+  display: inline-block;
+  font-weight: 700;
+}
+
+.timeDate p {
+  margin-top: 13px;
+  font-size: 0.875em;
+  width: auto;
+}
+
+.mainContentContainer {
+  padding: 0px;
+  background-color: #fff;
+  width: 100%;
+  height: 500px;
+  display: flex;
+  flex-direction: column;
+}
+
+.qrContainer {
+  margin: 15px 0px 10px;
+  padding: 0px;
+  align-self: center;
+  width: 250px;
+  height: 240px;
+  border: 1px solid #e6e6e6;
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  background-image: url("img/degreeBack.png");
+  background-repeat: no-repeat;
+  background-size: 55%;
+}
+
+.qrContainer p {
+  position: relative;
+  color: #fff;
+  margin: 4px 36px 24px;
+}
+
+.bottomBar {
+  width: 100%;
+  height: 59px;
+  position: fixed;
+  bottom: 0px;
+  left: 0px;
+  background-color: #fff;
+  border-top: 1px solid #e6e6e6;
+  display: flex;
+  align-items: center;
+  justify-content: space-around;
+}
+
+.button {
+  cursor: default;
+  width: 80px;
+  font-size: 0.9em;
+  margin: 3px;
+  display: inline-flex;
+  flex-direction: column;
+  color: rgb(146, 150, 156);
+  align-items: center;
+  justify-content: center;
+}
+
+#qrCode {
+  padding: 0px;
+  position: relative;
+  width: 150px;
+  height: 150px;
+  align-self: center;
+  /* background-color: #666; */
+}
+
+#qrCode canvas {
+  position: absolute;
+  margin: 0px;
+  height: 150px !important;
+  width: 150px !important;
+}
+
+#qrcode img {
+  position: absolute;
+  margin: 0px;
+}
+
+.floatMenu {
+  color: #666;
+  top: calc(50% - 200px);
+  z-index: 999;
+  position: fixed;
+  align-self: center;
+  justify-self: center;
+  width: 300px;
+  height: 400px;
+  background-color: #fff;
+  border-radius: 10px;
+  box-shadow: 0px 10px 20px rgba(0, 0, 0, 0.2);
+  overflow-y: scroll;
+  overflow-x: hidden;
+  /* padding: 20px; */
+}
+
+.floatMenu * {
+  margin-left: 20px;
+}
+
+.floatMenu h4 {
+  margin: 20px 20px 0px;
+}
+
+.inputBox {
+  height: 30px;
+  width: 80%;
+  font-size: 1.2em;
+  outline: none;
+  border: 1px solid #eee;
+  border-radius: 3px;
+  margin: 0px 20px 0px;
+}
+
+.green {
+  margin: 0px 5px;
+  color: rgb(254, 192, 98);
+}
+
+input::-webkit-outer-spin-button,
+input::-webkit-inner-spin-button {
+  -webkit-appearance: none !important;
+  margin: 0;
+}
+
+.propaganda {
+  font-size: 0.9em;
+  align-self: center;
+}
+
+.icon {
+  font-size: 1.8em;
+  margin: 10px 0px -15px;
+}
+
+.active {
+  color: rgb(106, 207, 209);
+}

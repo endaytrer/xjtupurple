@@ -1,0 +1,146 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>交大校园码</title>
+    <script src="node_modules/vue/dist/vue.js"></script>
+    <script src="node_modules/jquery/dist/jquery.js"></script>
+    <script src="node_modules/qrcodejs2/qrcode.js"></script>
+    <script src="script.js"></script>
+    <link rel="stylesheet" href="http://jdres.xjtu.edu.cn/fe_components/iconfont_mobile/iconfont.css">
+    <link rel="stylesheet" href="style.css">
+</head>
+
+<body>
+    <div id="app">
+        <div class="container">
+            <div class="floatMenu" style="display: none;">
+                <h4>学号</h4><input type="number" name="stuNum" id="stuNumInput" class="inputBox" v-model="stuNo">
+                <h4>姓名</h4><input type="text" name="stuName" id="stuNameInput" class="inputBox" v-model="stuName">
+                <h4>书院和班级</h4><input type="text" name="stuPos" id="stuPosInput" class="inputBox" v-model="stuPosition">
+                <h4>学位</h4><input type="text" name="stuDeg" id="stuDegInput" class="inputBox" v-model="stuDegree">
+                <h4>报到日期</h4><input type="date" name="reportDate" id="reportDateInput" class="inputBox"
+                    v-model="reportDate">
+                <h4>报到时间</h4><input type="time" name="reportTime" id="reportTimeInput" class="inputBox"
+                    v-model="reportTime">
+                <h4>离校时间</h4><input type="time" name="outDateTime" id="outTimeInput" class="inputBox"
+                    v-model="outTimeFrom">
+                <h4>返校时间</h4><input type="time" name="inDateTime" id="inTimeInput" class="inputBox" v-model="outTimeTo">
+                <h4>照片</h4><input type="file" name="imageUpload" id="imageUploadInput" accept="image/*"
+                    v-on:change="changeImage">
+            </div>
+            <div class="topContainer">
+                <img :src="photoURL" class="photograph" alt="this is your photo" />
+                <div class="textContainer">
+                    <p>{{ stuNo }} {{stuName}} <small class="smallText">{{ stuDegree }}</small></p>
+                    <p>{{ stuPosition }}</p>
+                </div>
+            </div>
+            <div class="mainContentContainer">
+                <div class="dataContainer">
+                    <div class="title">
+                        <h3>当前时间：</h3>
+                    </div>
+                    <div class="timeDate">
+                        <div id="date">{{ nowDate }}</div>
+                        <div id="time">{{ nowTime }}</div>
+                        <p>已于 {{ reportDate }} {{ reportTime }} 完成报到登记</p>
+                        <p>外出时间<span class="green">{{ today }} {{ outTimeFrom }}</span>至<span class="green">{{ today }}
+                                {{ outTimeTo }}</span>
+                        </p>
+                    </div>
+                </div>
+                <div class="qrContainer">
+                    <p>{{ stuDegree }}</p>
+                    <div id="qrCode"></div>
+                </div>
+                <div class="propaganda">校园最安全，外出有风险</div>
+                <div class="propaganda">其他必须外出的情况</div>
+            </div>
+        </div>
+        <div class="bottomBar">
+            <div class="button active" id="menuToggler">
+                <i class="icon iconfont icon-daibanshiyiicon"></i>
+                <p>交大校园码</p>
+            </div>
+            <div class="button">
+                <i class="icon iconfont icon-daibanshiyiicon"></i>
+                <p>返校申请</p>
+            </div>
+            <div class="button">
+                <i class="icon iconfont icon-daibanshiyiicon"></i>
+                <p>外出申请</p>
+            </div>
+            <div class="button">
+                <i class="icon iconfont icon-daibanshiyiicon"></i>
+                <p>转码申请</p>
+            </div>
+        </div>
+        <script>
+            var app = new Vue({
+                el: "#app",
+                data: {
+                    stuNo: "1234567890",
+                    stuName: "唐纳德",
+                    stuPosition: "美国华盛顿/白宫",
+                    stuDegree: "总统",
+                    reportDate: "1926-08-17",
+                    reportTime: "11:45:14",
+                    today: "",
+                    nowDate: "",
+                    nowTime: "",
+                    outTimeFrom: "00:00",
+                    outTimeTo: "23:59",
+                    photoURL: "img/default.jpeg"
+                },
+                created: function () {
+                    this.timer();
+                    this.getData();
+                    this.generateCode();
+                },
+                methods: {
+                    getData() {
+                        var aDate = new Date();
+                        this.nowDate = (aDate.getMonth() + 1 <= 9 ? "0" + (aDate.getMonth() + 1) : aDate
+                            .getMonth() + 1) + "月" + (aDate
+                            .getDate() <= 9 ? "0" + aDate.getDate() : aDate.getDate()) + "日";
+                        this.nowTime = (aDate.getHours() <= 9 ? "0" +
+                            aDate.getHours() : aDate.getHours()) + ":" + (aDate.getMinutes() <= 9 ? "0" +
+                            aDate
+                            .getMinutes() :
+                            aDate.getMinutes()) + ":" + (aDate.getSeconds() <= 9 ? "0" + aDate
+                            .getSeconds() :
+                            aDate.getSeconds());
+                        this.today = aDate.getFullYear() + "-" + (aDate.getMonth() + 1 <= 9 ? "0" + (aDate
+                                    .getMonth() + 1) : aDate
+                                .getMonth() + 1) +
+                            "-" + (aDate.getDate() <= 9 ? "0" + aDate.getDate() : aDate.getDate());
+                    },
+                    timer() {
+                        return setInterval(() => {
+                            this.getData();
+                        }, 100);
+                    },
+                    generateCode() {
+                        var code = new QRCode("qrCode", "hello world");
+                    },
+                    changeImage() {
+                        var reader = new FileReader();
+                        var file = document.getElementById("imageUploadInput").files[0];
+                        reader.readAsDataURL(file);
+                        var that = this;
+                        reader.addEventListener("load", function () {
+                            that.photoURL = reader.result;
+                        }, false);
+                    }
+                },
+                destroyed: function () {
+                    clearInterval(this.timer);
+                }
+            })
+        </script>
+</body>
+
+</html>
