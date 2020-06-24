@@ -4,8 +4,9 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="Access-Control-Allow-Origin" content="*" />
     <title>交大校园码</title>
-    <script src="js/vue.min.js"></script>
+    <script src="node_modules/vue/dist/vue.js"></script>
     <script src="js/jquery.min.js"></script>
     <script src="js/qrcode.min.js"></script>
     <script src="js/script.js"></script>
@@ -28,8 +29,11 @@
                 <h4>离校时间</h4><input type="time" name="outDateTime" id="outTimeInput" class="inputBox"
                     v-model="outTimeFrom">
                 <h4>返校时间</h4><input type="time" name="inDateTime" id="inTimeInput" class="inputBox" v-model="outTimeTo">
+                <h4>自定义二维码内容(留空以随机生成)</h4><input type="text" name="qrCode" id="qrCodeInput" class="inputBox"
+                    v-model="qrCode">
                 <h4>照片</h4><input type="file" name="imageUpload" id="imageUploadInput" accept="image/*"
                     v-on:change="changeImage">
+                <button class="submitButton" @click="writeInfoToCache">将信息保存到缓存</button>
             </div>
             <div class="topContainer">
                 <img :src="photoURL" class="photograph" alt="this is your photo" />
@@ -82,26 +86,53 @@
             var app = new Vue({
                 el: "#app",
                 data: {
-                    stuNo: "1234567890",
-                    stuName: "唐纳德",
-                    stuPosition: "美国华盛顿/白宫",
-                    stuDegree: "总统",
-                    reportDate: "1926-08-17",
-                    reportTime: "11:45:14",
+                    stuNo: "1234567890", // 学号
+                    stuName: "唐纳德", // 姓名
+                    stuPosition: "美国华盛顿/白宫", // 学生书院/班级
+                    stuDegree: "总统", // 学生学位
+                    reportDate: "1926-08-17", // 学生报道日期
+                    reportTime: "11:45:14", // 学生报道时间
                     today: "",
                     nowDate: "",
                     nowTime: "",
-                    outTimeFrom: "00:00",
-                    outTimeTo: "23:59",
-                    photoURL: "img/default.jpeg"
+                    outTimeFrom: "00:00", // 外出时间
+                    outTimeTo: "23:59", // 入校时间
+                    photoURL: "img/default.jpeg", // 学生照片
+                    qrCode: "" // 生成的二维码
                 },
                 created: function () {
                     this.timer();
-                    this.getData();
-                    this.generateCode();
+                    this.getTimeData();
+                    this.getPersonalDataFromCache();
                 },
                 methods: {
-                    getData() {
+                    writeInfoToCache() { // 将数据写入缓存
+                        localStorage.setItem("stu_no", this.stuNo);
+                        localStorage.setItem("stu_name", this.stuName);
+                        localStorage.setItem("stu_position", this.stuPosition);
+                        localStorage.setItem("stu_degree", this.stuDegree);
+                        localStorage.setItem("report_date", this.reportDate);
+                        localStorage.setItem("report_time", this.reportTime);
+                        localStorage.setItem("out_time_from", this.outTimeFrom);
+                        localStorage.setItem("out_time_to", this.outTimeTo);
+                        localStorage.setItem("qr_code", this.qrCode);
+                        alert("保存成功!")
+                    },
+                    getPersonalDataFromCache() { // 从缓存读取数据
+                        this.qrCode = localStorage.getItem("qr_code") || this.generateCode();
+                        if (this.qrCode === "") {
+                            this.qrCode = this.generateCode();
+                        }
+                        this.stuNo = localStorage.getItem("stu_no") || "1234567890";
+                        this.stuName = localStorage.getItem("stu_name") || "唐纳德";
+                        this.stuPosition = localStorage.getItem("stu_position") || "美国华盛顿/白宫";
+                        this.stuDegree = localStorage.getItem("stu_degree") || "总统";
+                        this.reportDate = localStorage.getItem("report_date") || "1926-08-17";
+                        this.reportTime = localStorage.getItem("report_time") || "11:45:14";
+                        this.outTimeFrom = localStorage.getItem("out_time_from") || "00:00";
+                        this.outTimeTo = localStorage.getItem("out_time_to") || "23:59";
+                    },
+                    getTimeData() { // 获取时间并格式化
                         var aDate = new Date();
                         this.nowDate = (aDate.getMonth() + 1 <= 9 ? "0" + (aDate.getMonth() + 1) : aDate
                             .getMonth() + 1) + "月" + (aDate
@@ -118,15 +149,20 @@
                                 .getMonth() + 1) +
                             "-" + (aDate.getDate() <= 9 ? "0" + aDate.getDate() : aDate.getDate());
                     },
-                    timer() {
+                    timer() { // 实时更新时间, 重制时钟间隔
                         return setInterval(() => {
-                            this.getData();
+                            this.getTimeData();
                         }, 100);
                     },
-                    generateCode() {
-                        var code = new QRCode("qrCode", "hello world");
+                    generateCode() { // 生成随机二维码数据
+                        var seq = "";
+                        var hexSeq = "01234567899ABCDEF";
+                        for (let index = 0; index < 32; index++) {
+                            seq += "" + hexSeq[Math.floor(Math.random() * 16)];
+                        }
+                        return seq;
                     },
-                    changeImage() {
+                    changeImage() { // 更换图片
                         var reader = new FileReader();
                         var file = document.getElementById("imageUploadInput").files[0];
                         reader.readAsDataURL(file);
@@ -136,7 +172,7 @@
                         }, false);
                     }
                 },
-                destroyed: function () {
+                destroyed: function () { // 清除计时器间隔
                     clearInterval(this.timer);
                 }
             })

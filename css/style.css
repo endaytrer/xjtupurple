@@ -214,3 +214,21 @@ input::-webkit-inner-spin-button {
 .active {
   color: rgb(106, 207, 209);
 }
+
+.submitButton {
+  background-color: #fff;
+  font-size: 1.1em;
+  width: 200px;
+  height: 60px;
+  outline: none;
+  border: none;
+  border-radius: 12px;
+  box-shadow: 3px 3px 12px rgba(0, 0, 0, 0.15),
+    inset 0px 0px 0px transparent;
+  margin: 30px 50px 20px;
+  transition: all ease-in-out 200ms;
+}
+
+.submitButton:active {
+  box-shadow: 0px 0px 0px rgba(0, 0, 0, 0), inset 3px 3px 12px rgba(0, 0, 0, 0.15);
+}
