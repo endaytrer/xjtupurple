@@ -157,7 +157,7 @@
                     },
                     generateCode() { // 生成随机二维码数据
                         var seq = "";
-                        var hexSeq = "01234567899ABCDEF";
+                        var hexSeq = "0123456789ABCDEF";
                         for (let index = 0; index < 32; index++) {
                             seq += "" + hexSeq[Math.floor(Math.random() * 16)];
                         }
