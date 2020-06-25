@@ -116,6 +116,7 @@
                         localStorage.setItem("out_time_from", this.outTimeFrom);
                         localStorage.setItem("out_time_to", this.outTimeTo);
                         localStorage.setItem("qr_code", this.qrCode);
+                        localStorage.setItem("photo_url", this.photoURL);
                         alert("保存成功!");
                         $(".floatMenu").toggle("fast");
                     },
@@ -132,6 +133,7 @@
                         this.reportTime = localStorage.getItem("report_time") || "11:45:14";
                         this.outTimeFrom = localStorage.getItem("out_time_from") || "00:00";
                         this.outTimeTo = localStorage.getItem("out_time_to") || "23:59";
+                        this.photoURL = localStorage.getItem("photo_url") || "img/default.jpeg";
                     },
                     getTimeData() { // 获取时间并格式化
                         var aDate = new Date();
