@@ -13,12 +13,24 @@ body {
 }
 
 .topContainer {
-  background-color: #1671f0;
   width: 100%;
   height: 166px;
   padding-left: 30px;
   display: flex;
   align-items: center;
+  transition: background-color ease-in-out 200ms;
+}
+
+.undergraduateBackground {
+  background-color: #1671f0;
+}
+
+.graduateBackground {
+  background-color: #7547C0;
+}
+
+.overseaBackground {
+  background-color: #353A73;
 }
 
 .photograph {

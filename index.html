@@ -21,7 +21,11 @@
                 <h4>学号</h4><input type="number" name="stuNum" id="stuNumInput" class="inputBox" v-model="stuNo">
                 <h4>姓名</h4><input type="text" name="stuName" id="stuNameInput" class="inputBox" v-model="stuName">
                 <h4>书院和班级</h4><input type="text" name="stuPos" id="stuPosInput" class="inputBox" v-model="stuPosition">
-                <h4>学位</h4><input type="text" name="stuDeg" id="stuDegInput" class="inputBox" v-model="stuDegree">
+                <h4>学位</h4><select class="inputBox" v-model="stuDegree">
+                    <option>本科生</option>
+                    <option>研究生</option>
+                    <option>留学生</option>
+                </select>
                 <h4>报到日期</h4><input type="date" name="reportDate" id="reportDateInput" class="inputBox"
                     v-model="reportDate">
                 <h4>报到时间</h4><input type="time" name="reportTime" id="reportTimeInput" class="inputBox"
@@ -32,10 +36,11 @@
                 <h4>自定义二维码内容(留空以随机生成)</h4><input type="text" name="qrCode" id="qrCodeInput" class="inputBox"
                     v-model="qrCode">
                 <h4>照片</h4><input type="file" name="imageUpload" id="imageUploadInput" accept="image/*"
-                    v-on:change="changeImage">
+                    @change="changeImage">
                 <button class="submitButton" @click="writeInfoToCache">将信息保存到缓存</button>
             </div>
-            <div class="topContainer">
+            <div class="topContainer"
+                :class=" {'undergraduateBackground': isUndergraduate, 'graduateBackground': isGraduate, 'overseaBackground': isOversea} ">
                 <img :src="photoURL" class="photograph" alt="this is your photo" />
                 <div class="textContainer">
                     <p>{{ stuNo }} {{ stuName }} <small class="smallText">{{ stuDegree }}</small></p>
@@ -89,8 +94,8 @@
                     stuNo: "1234567890", // 学号
                     stuName: "唐纳德", // 姓名
                     stuPosition: "美国华盛顿/白宫", // 学生书院/班级
-                    stuDegree: "总统", // 学生学位
-                    reportDate: "1926-08-17", // 学生报道日期
+                    stuDegree: "本科生", // 学生学位
+                    reportDate: "2020-05-01", // 学生报道日期
                     reportTime: "11:45:14", // 学生报道时间
                     today: "",
                     nowDate: "",
@@ -99,6 +104,17 @@
                     outTimeTo: "23:59", // 入校时间
                     photoURL: "img/default.jpeg", // 学生照片
                     qrCode: "" // 生成的二维码
+                },
+                computed: {
+                    isUndergraduate: function () {
+                        return this.stuDegree === "本科生";
+                    },
+                    isGraduate: function () {
+                        return this.stuDegree === "研究生";
+                    },
+                    isOversea: function () {
+                        return this.stuDegree === "留学生";
+                    }
                 },
                 created: function () {
                     this.timer();
@@ -128,8 +144,8 @@
                         this.stuNo = localStorage.getItem("stu_no") || "1234567890";
                         this.stuName = localStorage.getItem("stu_name") || "唐纳德";
                         this.stuPosition = localStorage.getItem("stu_position") || "美国华盛顿/白宫";
-                        this.stuDegree = localStorage.getItem("stu_degree") || "总统";
-                        this.reportDate = localStorage.getItem("report_date") || "1926-08-17";
+                        this.stuDegree = localStorage.getItem("stu_degree") || "本科生";
+                        this.reportDate = localStorage.getItem("report_date") || "2020-05-01";
                         this.reportTime = localStorage.getItem("report_time") || "11:45:14";
                         this.outTimeFrom = localStorage.getItem("out_time_from") || "00:00";
                         this.outTimeTo = localStorage.getItem("out_time_to") || "23:59";
