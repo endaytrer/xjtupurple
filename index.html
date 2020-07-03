@@ -60,7 +60,8 @@
                         <div id="date">{{ nowDate }}</div>
                         <div id="time">{{ nowTime }}</div>
                         <p>已于 {{ reportDate }} {{ reportTime }} 完成报到登记</p>
-                        <p>外出时间<span class="green">{{ today }} {{ outTimeFrom }}</span>至<span class="green">{{ today }}
+                        <p v-if="isPurple">外出时间<span class="green">{{ today }} {{ outTimeFrom }}</span>至<span
+                                class="green">{{ today }}
                                 {{ outTimeTo }}</span>
                         </p>
                     </div>
