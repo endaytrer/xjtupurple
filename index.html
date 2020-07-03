@@ -26,6 +26,10 @@
                     <option>研究生</option>
                     <option>留学生</option>
                 </select>
+                <h4>生成码颜色</h4><select class="inputBox" v-model="generateColorOfCode">
+                    <option>紫码</option>
+                    <option>绿码</option>
+                </select>
                 <h4>报到日期</h4><input type="date" name="reportDate" id="reportDateInput" class="inputBox"
                     v-model="reportDate">
                 <h4>报到时间</h4><input type="time" name="reportTime" id="reportTimeInput" class="inputBox"
@@ -62,11 +66,14 @@
                     </div>
                 </div>
                 <div class="qrContainer">
+                    <div class="degreeBar"
+                        :class=" {'undergraduateBackground': isUndergraduate, 'graduateBackground': isGraduate, 'overseaBackground': isOversea} ">
+                    </div>
                     <p>{{ stuDegree }}</p>
                     <div id="qrCode"></div>
                 </div>
-                <div class="propaganda">校园最安全，外出有风险</div>
-                <div class="propaganda">其他必须外出的情况</div>
+                <div class="propaganda" v-if="isPurple">校园最安全，外出有风险</div>
+                <div class="propaganda" v-if="isPurple">其他必须外出的情况</div>
             </div>
         </div>
         <div class="bottomBar">
@@ -103,7 +110,8 @@
                     outTimeFrom: "00:00", // 外出时间
                     outTimeTo: "23:59", // 入校时间
                     photoURL: "img/default.jpeg", // 学生照片
-                    qrCode: "" // 生成的二维码
+                    qrCode: "", // 生成的二维码
+                    generateColorOfCode: "紫码"
                 },
                 computed: {
                     isUndergraduate: function () {
@@ -114,6 +122,22 @@
                     },
                     isOversea: function () {
                         return this.stuDegree === "留学生";
+                    },
+                    colorOfCode: function () {
+                        switch (this.generateColorOfCode) {
+                            case "紫码":
+                                return "#F97AFB";
+                                break;
+                            case "绿码":
+                                return "#2BAA66";
+                                break;
+                            default:
+                                return "#F97AFB";
+                                break;
+                        }
+                    },
+                    isPurple: function () {
+                        return this.generateColorOfCode === "紫码";
                     }
                 },
                 created: function () {
@@ -121,6 +145,7 @@
                     this.getTimeData();
                     this.getPersonalDataFromCache();
                 },
+
                 methods: {
                     writeInfoToCache() { // 将数据写入缓存
                         localStorage.setItem("stu_no", this.stuNo);
@@ -133,8 +158,8 @@
                         localStorage.setItem("out_time_to", this.outTimeTo);
                         localStorage.setItem("qr_code", this.qrCode);
                         localStorage.setItem("photo_url", this.photoURL);
+                        localStorage.setItem("generate_color_of_code", this.generateColorOfCode);
                         alert("保存成功!");
-                        $(".floatMenu").toggle("fast");
                     },
                     getPersonalDataFromCache() { // 从缓存读取数据
                         this.qrCode = localStorage.getItem("qr_code") || this.generateCode();
@@ -150,6 +175,7 @@
                         this.outTimeFrom = localStorage.getItem("out_time_from") || "00:00";
                         this.outTimeTo = localStorage.getItem("out_time_to") || "23:59";
                         this.photoURL = localStorage.getItem("photo_url") || "img/default.jpeg";
+                        this.generateColorOfCode = localStorage.getItem("generate_color_of_code") || "紫码";
                     },
                     getTimeData() { // 获取时间并格式化
                         var aDate = new Date();
@@ -189,7 +215,7 @@
                         reader.addEventListener("load", function () {
                             that.photoURL = reader.result;
                         }, false);
-                    }
+                    },
                 },
                 destroyed: function () { // 清除计时器间隔
                     clearInterval(this.timer);

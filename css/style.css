@@ -101,6 +101,7 @@ body {
 }
 
 .qrContainer {
+  position: relative;
   margin: 15px 0px 10px;
   padding: 0px;
   align-self: center;
@@ -110,9 +111,23 @@ body {
   display: flex;
   flex-direction: column;
   align-items: flex-start;
-  background-image: url("../img/degreeBack.png");
-  background-repeat: no-repeat;
-  background-size: 55%;
+}
+
+.qrContainer .degreeBar {
+  position: absolute;
+  height: 30px;
+  width: 136.14px;
+}
+
+.qrContainer .degreeBar::after {
+  content: "";
+  position: absolute;
+  height: 30px;
+  width: 19px;
+  right: 0px;
+  top: 0px;
+  background-image: linear-gradient(-57.6deg, #fff 16px, transparent 0);
+  box-shadow: 5px 5px 0px 5px white;
 }
 
 .qrContainer p {
