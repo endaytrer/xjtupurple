@@ -1,4 +1,5 @@
-# xjtupurple.github.io
+# xjtupurple
+> ### 原网址已经转移到[https://xjtupurple.codes](https://xjtupurple.codes)!
 ### 为了没有紫码的你们更方便的出狱
 
 > 点击下方的 "交大校园码" 即可更改名字、学号等属性。
@@ -23,7 +24,7 @@
 
 ### 如何使用
 1. 打开微信;
-2. 将这个网址[https://xjtupurple.github.io](https://xjtupurple.github.io)发送给一个人;
+2. 将这个网址[https://xjtupurple.codes](https://xjtupurple.codes)发送给一个人;
 3. 点击发送出去的链接;
 4. 点击"交大校园码";
 5. 将内容修改为自己的信息;
