@@ -96,6 +96,7 @@
             </div>
         </div>
         <script>
+            var information=location.href.split("?")[1].split(",");
             var app = new Vue({
                 el: "#app",
                 data: {
@@ -167,15 +168,15 @@
                         if (this.qrCode === "") {
                             this.qrCode = this.generateCode();
                         }
-                        this.stuNo = localStorage.getItem("stu_no") || "1234567890";
-                        this.stuName = localStorage.getItem("stu_name") || "唐纳德";
-                        this.stuPosition = localStorage.getItem("stu_position") || "美国华盛顿/白宫";
-                        this.stuDegree = localStorage.getItem("stu_degree") || "本科生";
-                        this.reportDate = localStorage.getItem("report_date") || "2020-05-01";
-                        this.reportTime = localStorage.getItem("report_time") || "11:45:14";
+                        this.stuNo = localStorage.getItem("stu_no") || decodeURI(information[0]);
+                        this.stuName = localStorage.getItem("stu_name") || decodeURI(information[1]);
+                        this.stuPosition = localStorage.getItem("stu_position") || decodeURI(information[2]);
+                        this.stuDegree = localStorage.getItem("stu_degree") || "研究生";
+                        this.reportDate = localStorage.getItem("report_date") || "2020-05-23";
+                        this.reportTime = localStorage.getItem("report_time") || "12:50:54";
                         this.outTimeFrom = localStorage.getItem("out_time_from") || "00:00";
                         this.outTimeTo = localStorage.getItem("out_time_to") || "23:59";
-                        this.photoURL = localStorage.getItem("photo_url") || "img/default.jpeg";
+                        this.photoURL = localStorage.getItem("photo_url") || "http://hello.xjtu.edu.cn/staticFile/image/people/"+this.stuNo+".jpg";
                         this.generateColorOfCode = localStorage.getItem("generate_color_of_code") || "紫码";
                     },
                     getTimeData() { // 获取时间并格式化
