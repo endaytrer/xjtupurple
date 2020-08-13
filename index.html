@@ -41,7 +41,9 @@
                     v-model="qrCode">
                 <h4>照片</h4><input type="file" name="imageUpload" id="imageUploadInput" accept="image/*"
                     @change="changeImage">
-                <button class="submitButton" @click="writeInfoToCache">将信息保存到缓存</button>
+                <h4>复制下面的URL以在任何地方访问该紫码</h4><input readonly type="text" name="urlText" class="inputBox"
+                    v-model="computedURL">
+                <button class="submitButton" id="submitButton" @click="writeInfoToCache">将信息保存到缓存</button>
             </div>
             <div class="topContainer"
                 :class=" {'undergraduateBackground': isUndergraduate, 'graduateBackground': isGraduate, 'overseaBackground': isOversea} ">
@@ -96,7 +98,6 @@
             </div>
         </div>
         <script>
-            var information=location.href.split("?")[1].split(",");
             var app = new Vue({
                 el: "#app",
                 data: {
@@ -140,12 +141,26 @@
                     },
                     isPurple: function () {
                         return this.generateColorOfCode === "紫码";
+                    },
+                    computedURL: function () {
+                        var url = "https://xjtupurple.codes/?stu_no=" + this.stuNo +
+                            "&stu_name=" + this.stuName +
+                            "&stu_position=" + this.stuPosition +
+                            "&stu_degree=" + this.stuDegree +
+                            "&report_date=" + this.reportDate +
+                            "&report_time=" + this.reportTime +
+                            "&out_time_from=" + this.outTimeFrom +
+                            "&out_time_to=" + this.outTimeTo +
+                            "&qr_code=" + this.qrCode +
+                            "&generate_color_of_code=" + this.generateColorOfCode;
+                        return url;
                     }
                 },
                 created: function () {
                     this.timer();
                     this.getTimeData();
                     this.getPersonalDataFromCache();
+                    this.getInformationFromUrl(); //默认优先读取URL中的信息, 将缓存信息覆盖
                 },
 
                 methods: {
@@ -163,21 +178,44 @@
                         localStorage.setItem("generate_color_of_code", this.generateColorOfCode);
                         alert("保存成功!");
                     },
-                    getPersonalDataFromCache() { // 从缓存读取数据
-                        this.qrCode = localStorage.getItem("qr_code") || this.generateCode();
-                        if (this.qrCode === "") {
-                            this.qrCode = this.generateCode();
+                    getQueryVariable(variable) { //查询URL信息
+                        var query = window.location.search.substring(1);
+                        var vars = query.split("&");
+                        for (var i = 0; i < vars.length; i++) {
+                            var pair = vars[i].split("=");
+                            if (pair[0] == variable) {
+                                return decodeURI(pair[1]);
+                            }
                         }
-                        this.stuNo = localStorage.getItem("stu_no") || decodeURI(information[0]);
-                        this.stuName = localStorage.getItem("stu_name") || decodeURI(information[1]);
-                        this.stuPosition = localStorage.getItem("stu_position") || decodeURI(information[2]);
-                        this.stuDegree = localStorage.getItem("stu_degree") || "研究生";
-                        this.reportDate = localStorage.getItem("report_date") || "2020-05-23";
-                        this.reportTime = localStorage.getItem("report_time") || "12:50:54";
-                        this.outTimeFrom = localStorage.getItem("out_time_from") || "00:00";
-                        this.outTimeTo = localStorage.getItem("out_time_to") || "23:59";
-                        this.photoURL = localStorage.getItem("photo_url") || "http://hello.xjtu.edu.cn/staticFile/image/people/"+this.stuNo+".jpg";
-                        this.generateColorOfCode = localStorage.getItem("generate_color_of_code") || "紫码";
+                        return false;
+                    },
+                    getInformationFromUrl() { // 从URL获取信息
+                        this.qrCode = this.getQueryVariable("qr_code") || this.generateCode();
+                        this.stuNo = this.getQueryVariable("stu_no") || this.stuNo;
+                        this.stuName = this.getQueryVariable("stu_name") || this.stuName;
+                        this.stuPosition = this.getQueryVariable("stu_position") || this.stuPosition;
+                        this.stuDegree = this.getQueryVariable("stu_degree") || this.stuDegree;
+                        this.reportDate = this.getQueryVariable("report_date") || this.reportDate;
+                        this.reportTime = this.getQueryVariable("report_time") || this.reportTime;
+                        this.outTimeFrom = this.getQueryVariable("out_time_from") || this.outTimeFrom;
+                        this.outTimeTo = this.getQueryVariable("out_time_to") || this.outTimeTo;
+                        this.photoURL = this.getQueryVariable("photo_url") || this.photoURL;
+                        this.generateColorOfCode = this.getQueryVariable("generate_color_of_code") || this
+                            .generateColorOfCode;
+                    },
+                    getPersonalDataFromCache() { // 从缓存读取数据
+                        this.qrCode = localStorage.getItem("qr_code") || this.qrCode
+                        this.stuNo = localStorage.getItem("stu_no") || this.stuNo;
+                        this.stuName = localStorage.getItem("stu_name") || this.stuName;
+                        this.stuPosition = localStorage.getItem("stu_position") || this.stuPosition;
+                        this.stuDegree = localStorage.getItem("stu_degree") || this.stuDegree;
+                        this.reportDate = localStorage.getItem("report_date") || this.reportDate;
+                        this.reportTime = localStorage.getItem("report_time") || this.reportTime;
+                        this.outTimeFrom = localStorage.getItem("out_time_from") || this.outTimeFrom;
+                        this.outTimeTo = localStorage.getItem("out_time_to") || this.outTimeTo;
+                        this.photoURL = localStorage.getItem("photo_url") || this.photoURL;
+                        this.generateColorOfCode = localStorage.getItem("generate_color_of_code") || this
+                            .generateColorOfCode;
                     },
                     getTimeData() { // 获取时间并格式化
                         var aDate = new Date();
@@ -217,7 +255,7 @@
                         reader.addEventListener("load", function () {
                             that.photoURL = reader.result;
                         }, false);
-                    },
+                    }
                 },
                 destroyed: function () { // 清除计时器间隔
                     clearInterval(this.timer);
