@@ -47,7 +47,7 @@
             </div>
             <div class="topContainer"
                 :class=" {'undergraduateBackground': isUndergraduate, 'graduateBackground': isGraduate, 'overseaBackground': isOversea} ">
-                <img :src="photoURL" class="photograph" alt="this is your photo" />
+                <img :src="photoURL" class="photograph" alt="this is your photo" onerror="javascript:this.src='img/default.jpeg';this.οnerrοr=null;" />
                 <div class="textContainer">
                     <p>{{ stuNo }} {{ stuName }} <small class="smallText">{{ stuDegree }}</small></p>
                     <p>{{ stuPosition }}</p>
@@ -199,7 +199,7 @@
                         this.reportTime = this.getQueryVariable("report_time") || this.reportTime;
                         this.outTimeFrom = this.getQueryVariable("out_time_from") || this.outTimeFrom;
                         this.outTimeTo = this.getQueryVariable("out_time_to") || this.outTimeTo;
-                        this.photoURL = this.getQueryVariable("photo_url") || this.photoURL;
+                        this.photoURL = this.getQueryVariable("photo_url") || "http://hello.xjtu.edu.cn/staticFile/image/people/"+this.stuNo+".jpg";
                         this.generateColorOfCode = this.getQueryVariable("generate_color_of_code") || this
                             .generateColorOfCode;
                     },
