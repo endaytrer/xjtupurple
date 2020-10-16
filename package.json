@@ -8,8 +8,10 @@
     "lint": "vue-cli-service lint"
   },
   "dependencies": {
+    "clipboard": "^2.0.6",
     "core-js": "^3.6.5",
     "qrcodejs2": "0.0.2",
+    "query-string": "^6.13.5",
     "vue": "^3.0.0",
     "vue-router": "^4.0.0-beta.13",
     "vue-slider-component": "^4.0.0-beta.2"

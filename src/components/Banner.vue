@@ -2,23 +2,23 @@
   <div
     class="topContainer"
     :class="{
-      undergraduateBackground: isUndergraduate,
-      graduateBackground: isGraduate,
-      overseaBackground: isOversea,
+      undergraduateBackground: computedData.isUndergraduate,
+      graduateBackground: computedData.isGraduate,
+      overseaBackground: computedData.isOversea,
     }"
   >
     <img
-      :src="photoURL"
+      :src="personalData.photoURL"
       class="photograph"
       alt="this is your photo"
-      :style="{ borderWidth: photoBorderWidth + 'px' }"
+      :style="{ borderWidth: '' + personalData.photoBorderWidth + 'px' }"
     />
     <div class="textContainer">
       <p>
-        {{ stuNo }} {{ stuName }}
-        <small class="smallText">{{ stuDegree }}</small>
+        {{ personalData.stuNo }} {{ personalData.stuName }}
+        <small class="smallText">{{ personalData.stuDegree }}</small>
       </p>
-      <p>{{ stuPosition }}</p>
+      <p>{{ personalData.stuPosition }}</p>
     </div>
   </div>
 </template>
@@ -27,16 +27,29 @@
 export default {
   name: "Banner",
   props: {
-    photoURL: String,
-    photoBorderWidth: Number,
-    stuNo: String,
-    stuName: String,
-    stuDegree: String,
-    stuPosition: String,
-    isUndergraduate: Boolean,
-    isGraduate: Boolean,
-    isOversea: Boolean,
+    personalData: {
+      stuNo: String, // 学号
+      stuName: String, // 姓名
+      stuPosition: String, // 学生书院/班级
+      stuDegree: String, // 学生学位
+      reportDate: String, // 学生报道日期
+      reportTime: String, // 学生报道时间
+      outTimeFrom: String, // 外出时间
+      outTimeTo: String, // 入校时间
+      photoURL: String, // 学生照片
+      photoBorderWidth: Number,
+      qrCode: String, // 生成的二维码
+      generateColorOfCode: String,
+    },
+    computedData: {
+      isUndergraduate: Boolean,
+      isGraduate: Boolean,
+      isOversea: Boolean,
+      isPurple: Boolean,
+      colorOfCode: Boolean,
+    },
   },
+  computed: {},
 };
 </script>
 
@@ -72,4 +85,6 @@ export default {
   font-size: 0.88em;
   padding-left: 10px;
 }
+
+
 </style>

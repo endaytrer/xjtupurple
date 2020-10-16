@@ -6,7 +6,7 @@
       active-class="active"
       @click="this.activeButton = 0"
     >
-      <MenuIcon class="icon" :active=" this.activeButton === 0"></MenuIcon>
+      <MenuIcon class="icon" :active="this.activeButton === 0"></MenuIcon>
       <p>交大校园码</p>
     </router-link>
     <router-link
@@ -60,6 +60,7 @@ export default {
 
 <style scoped>
 .bottomBar {
+  z-index: 20;
   width: 100%;
   height: 59px;
   position: fixed;

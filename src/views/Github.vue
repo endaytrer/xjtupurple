@@ -19,6 +19,7 @@
       </svg>
     </a>
     <a href="https://github.com/endaytrer/xjtupurple"><h1>XJTUPurple</h1></a>
+    <p>&#128070; View this repository on GitHub &#128070;</p>
     <div class="horizontalStack">
       <img
         src="https://img.shields.io/github/forks/endaytrer/xjtupurple.svg?color=green"
@@ -45,7 +46,10 @@ export default {};
   justify-content: center;
 }
 .horizontalStack img {
-  margin: 0px 10px;
+  margin: 0px 3px;
+}
+.horizontalStack {
+  margin: 0 0 20px;
 }
 .footnote {
   margin: 0px 30px;
@@ -54,5 +58,8 @@ export default {};
 a {
   color: #7182c1;
   text-decoration: none;
+}
+a h1 {
+  margin: 0;
 }
 </style>

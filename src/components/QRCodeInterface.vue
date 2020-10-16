@@ -7,10 +7,14 @@
       <div class="timeDate">
         <div id="date">{{ nowDate }}</div>
         <div id="time">{{ nowTime }}</div>
-        <p>已于 {{ reportDate }} {{ reportTime }} 完成报到登记</p>
-        <p v-if="isPurple">
-          外出时间<span class="green">{{ today }} {{ outTimeFrom }}</span
-          >至<span class="green">{{ today }} {{ outTimeTo }}</span>
+        <p>
+          已于 {{ personalData.reportDate }}
+          {{ personalData.reportTime }} 完成报到登记
+        </p>
+        <p v-if="computedData.isPurple">
+          外出时间<span class="green"
+            >{{ today }} {{ personalData.outTimeFrom }}</span
+          >至<span class="green">{{ today }} {{ personalData.outTimeTo }}</span>
         </p>
       </div>
     </div>
@@ -18,41 +22,55 @@
       <div
         class="degreeBar"
         :class="{
-          undergraduateBackground: isUndergraduate,
-          graduateBackground: isGraduate,
-          overseaBackground: isOversea,
+          undergraduateBackground: computedData.isUndergraduate,
+          graduateBackground: computedData.isGraduate,
+          overseaBackground: computedData.isOversea,
         }"
       ></div>
-      <p>{{ stuDegree }}</p>
+      <p>{{ personalData.stuDegree }}</p>
       <div id="qrCodeDisplay"></div>
     </div>
-    <div class="propaganda" v-if="isPurple">校园最安全，外出有风险</div>
-    <div class="propaganda" v-if="isPurple">其他必须外出的情况</div>
+    <div class="propaganda" v-if="computedData.isPurple">
+      校园最安全，外出有风险
+    </div>
+    <div class="propaganda" v-if="computedData.isPurple">
+      其他必须外出的情况
+    </div>
   </div>
 </template>
 
 <script>
-import QRCode from "qrcodejs2";
 export default {
   name: "QRCodeInterface",
   props: {
-    reportDate: String,
-    stuDegree: String,
-    reportTime: String,
-    outTimeFrom: String,
-    outTimeTo: String,
-    isUndergraduate: Boolean,
-    isGraduate: Boolean,
-    isOversea: Boolean,
-    isPurple: Boolean,
-    qrCode: String,
-    colorOfCode: String,
+    personalData: {
+      stuNo: String, // 学号
+      stuName: String, // 姓名
+      stuPosition: String, // 学生书院/班级
+      stuDegree: String, // 学生学位
+      reportDate: String, // 学生报道日期
+      reportTime: String, // 学生报道时间
+      outTimeFrom: String, // 外出时间
+      outTimeTo: String, // 入校时间
+      photoURL: String, // 学生照片
+      photoBorderWidth: Number,
+      qrCode: String, // 生成的二维码
+      generateColorOfCode: String,
+    },
+    computedData: {
+      isUndergraduate: Boolean,
+      isGraduate: Boolean,
+      isOversea: Boolean,
+      isPurple: Boolean,
+      colorOfCode: String,
+    },
   },
   data() {
     return {
       nowDate: "",
       nowTime: "",
       today: "",
+      timingInterval: null,
     };
   },
   methods: {
@@ -94,13 +112,6 @@ export default {
   },
   mounted() {
     this.timingInterval = this.timer();
-    new QRCode("qrCodeDisplay", {
-      text: "               " + this.qrCode + "               ",
-      width: 150,
-      height: 150,
-      colorDark: this.colorOfCode,
-      correctLevel: QRCode.CorrectLevel.H,
-    });
   },
 };
 </script>
