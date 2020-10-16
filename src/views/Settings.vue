@@ -423,7 +423,8 @@ export default {
   background-color: #fff;
   border-radius: 7px;
 }
-input {
+input,
+select {
   margin: 2px 0 20px;
 }
 input::-webkit-outer-spin-button,
