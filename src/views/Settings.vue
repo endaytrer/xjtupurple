@@ -336,12 +336,16 @@ export default {
   },
   computed: {
     computedURL() {
+      let urlObject = {};
+      for (let key in this.modelValue) {
+        if (key != "photoURL") urlObject[key] = this.modelValue[key];
+      }
       return (
         document.URL.split("/")[0] +
         "//" +
         document.URL.split("/")[2] +
         "/?" +
-        queryString.stringify(this.modelValue)
+        queryString.stringify(urlObject)
       );
     },
     isUndergraduate() {
@@ -388,12 +392,14 @@ export default {
   height: 206px;
 }
 .preview {
+  z-index: 100;
   position: fixed;
   align-self: center;
   width: 100%;
   margin: 0 0 40px;
   box-shadow: 0 5px 10px rgba(0, 0, 0, 0.2);
   backdrop-filter: blur(10px);
+  -webkit-backdrop-filter: blur(10px);
 }
 .fullsize {
   background-color: #f5f5f5;

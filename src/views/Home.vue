@@ -72,8 +72,12 @@ export default {
       };
     },
   },
-  async mounted() {
-    await new QRCode("qrCodeDisplay", {
+  mounted() {
+    let ele = document.getElementById("qrCodeDisplay");
+    while (ele.hasChildNodes()) {
+      ele.removeChild(ele.lastChild);
+    }
+    new QRCode("qrCodeDisplay", {
       text: "               " + this.personalData.qrCode + "               ",
       width: 150,
       height: 150,

@@ -9,6 +9,7 @@
 <script>
 import Menu from "./components/Menu";
 import queryString from "query-string";
+import axios from "axios";
 export default {
   name: "App",
   components: {
@@ -50,21 +51,25 @@ export default {
     },
     async getDefaultProfilePhoto() {
       try {
-        const resp = await fetch(
-          "https://hello.xjtu.edu.cn/staticFile/image/people/" +
-            this.personalData.stuNo +
-            ".jpg"
+        let resp = await axios.get(
+          "/staticFile/image/people/" + this.personalData.stuNo + ".jpg",
+          {
+            crossdomain: true,
+            responseType: "arraybuffer",
+          }
         );
-        if (resp.status == 404) {
-          return null;
-        }
         return (
-          "https://hello.xjtu.edu.cn/staticFile/image/people/" +
-          this.personalData.stuNo +
-          ".jpg"
+          "data:image/png;base64," +
+          btoa(
+            new Uint8Array(resp.data).reduce(
+              (data, byte) => data + String.fromCharCode(byte),
+              ""
+            )
+          )
         );
       } catch (e) {
-        return null;
+        console.log("failed");
+        return this.personalData.photoURL;
       }
     },
     async getInformationFromUrl() {
@@ -96,8 +101,7 @@ export default {
         this.personalData.outTimeTo;
       this.personalData.photoURL =
         queryString.parseUrl(URL).query.photoUrl ||
-        (await this.getDefaultProfilePhoto()) ||
-        this.personalData.photoURL;
+        (await this.getDefaultProfilePhoto());
       this.personalData.generateColorOfCode =
         queryString.parseUrl(URL).query.generateColorOfCode ||
         this.personalData.generateColorOfCode;
