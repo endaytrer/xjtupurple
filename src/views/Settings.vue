@@ -7,10 +7,22 @@
         class="inputBox"
         :value="modelValue.stuNo"
         @input="
-          $emit(
-            'update:modelValue',
-            modifiedPersonalData('stuNo', $event.target.value)
-          )
+          (event) => {
+            $emit(
+              'update:modelValue',
+              this.modifiedPersonalDatas({ stuNo: event.target.value })
+            );
+          }
+        "
+        @focusout="
+          (event) => {
+            getDefaultProfilePhoto(event.target.value).then((url) => {
+              $emit(
+                'update:modelValue',
+                modifiedPersonalDatas({ photoURL: url || modelValue.photoURL })
+              );
+            });
+          }
         "
       />
       <span>姓名</span>
@@ -172,15 +184,7 @@
           }
         "
       />
-      <span>照片</span>
-      <label for="imageUploadinput"></label>
-      <input
-        type="file"
-        name="imageUpload"
-        id="imageUploadinput"
-        accept="image/*"
-        @change="(event) => changeImage(event)"
-      />
+
       <span>照片边框宽度</span>
       <vue-slider
         class="widthSlider"
@@ -201,19 +205,27 @@
         :computedData="computedData"
       ></Banner>
 
-      <span
-        ><button id="copyButton" data-clipboard-target="#copyUrlTarget">
-          复制</button
-        ><span>任意访问URL: </span></span
+      <span>任意访问URL:</span
+      ><span class="inputWithCopyButton">
+        <input
+          id="copyUrlTarget"
+          class="inputBox"
+          type="text"
+          readonly="readonly"
+          :value="computedURL"
+        />
+        <button id="copyButton" data-clipboard-target="#copyUrlTarget">
+          复制
+        </button></span
       >
+      <label class="uploadPhotoButton" for="imageUploadinput">上传照片</label>
       <input
-        id="copyUrlTarget"
-        class="inputBox"
-        type="text"
-        readonly="readonly"
-        :value="computedURL"
+        type="file"
+        name="imageUpload"
+        id="imageUploadinput"
+        accept="image/*"
+        @change="(event) => changeImage(event)"
       />
-
       <button class="submitButton" id="submitButton" @click="writeInfoToCache">
         保存
       </button>
@@ -227,6 +239,7 @@ import VueSlider from "vue-slider-component";
 import "vue-slider-component/theme/antd.css";
 import ClipboardJS from "clipboard";
 import queryString from "query-string";
+import axios from "axios";
 export default {
   name: "Settings",
   components: { VueSlider, Banner },
@@ -282,9 +295,38 @@ export default {
     );
   },
   methods: {
+    async getDefaultProfilePhoto(stuNo) {
+      try {
+        let resp = await axios.get(
+          "/staticFile/image/people/" + stuNo + ".jpg",
+          {
+            crossdomain: true,
+            responseType: "arraybuffer",
+          }
+        );
+        return (
+          "data:image/png;base64," +
+          btoa(
+            new Uint8Array(resp.data).reduce(
+              (data, byte) => data + String.fromCharCode(byte),
+              ""
+            )
+          )
+        );
+      } catch (e) {
+        return "/default.jpg";
+      }
+    },
     modifiedPersonalData(key, value) {
       let modifiedData = this.modelValue;
       modifiedData[key] = value;
+      return modifiedData;
+    },
+    modifiedPersonalDatas(object) {
+      let modifiedData = this.modelValue;
+      for (let key in object) {
+        modifiedData[key] = object[key];
+      }
       return modifiedData;
     },
     changeImage(event) {
@@ -421,16 +463,20 @@ export default {
 .inputBox {
   font-family: Avenir, Helvetica, Arial, sans-serif;
   height: 30px;
-  width: 100%;
+  width: calc(100% - 24px);
   font-size: 1.2em;
-  padding: 2px 6px 2px;
+  padding: 2px 12px 2px;
   outline: none;
   border: none;
   background-color: #fff;
-  border-radius: 7px;
+  border-radius: 20px;
 }
-input,
-select {
+select.inputBox {
+  width: 100%;
+  padding: 2px 6px 2px;
+}
+.formContainer > .inputBox,
+.inputWithCopyButton {
   margin: 2px 0 20px;
 }
 input::-webkit-outer-spin-button,
@@ -442,20 +488,43 @@ input::-webkit-inner-spin-button {
   align-self: center;
   font-size: 1.2em;
   font-weight: 600;
+  border: none;
   background-color: rgb(111, 127, 245);
   color: #fff;
   width: 200px;
   height: 60px;
   outline: none;
-  border: none;
   border-radius: 100px;
   transition: all ease-in-out 200ms;
-  box-shadow: 0px 3px 8px rgba(0, 0, 0, 0.15);
   margin-bottom: 100px;
+  box-shadow: 0 5px 10px rgba(0, 0, 0, 0.15);
 }
-
+.submitButton:hover {
+  background-color: #8a97f7;
+}
 .submitButton:active {
   background-color: #8a97f7;
+}
+.uploadPhotoButton {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  align-self: center;
+  font-size: 1.2em;
+  font-weight: 600;
+  background-color: rgb(126, 126, 126);
+  color: #fff;
+  width: 200px;
+  height: 60px;
+  outline: none;
+  border-radius: 100px;
+  transition: all ease-in-out 200ms;
+  margin: 40px 0 20px;
+  box-shadow: 0 5px 10px rgba(0, 0, 0, 0.1);
+}
+.uploadPhotoButton:hover {
+  background-color: rgb(161, 176, 187);
+  color: #fff;
 }
 .photograph {
   margin: 5px 0 20px;
@@ -483,5 +552,40 @@ input::-webkit-inner-spin-button {
 }
 span.warn {
   color: #aaaa20;
+}
+.inputWithCopyButton {
+  position: relative;
+  width: 100%;
+  height: 30px;
+  display: flex;
+  align-items: center;
+}
+.inputWithCopyButton button {
+  position: absolute;
+  height: 100%;
+  right: 2px;
+  padding: 2px 12px;
+  color: #fff;
+  border: none;
+  outline: none;
+  border-radius: 20px;
+  background-color: rgb(160, 192, 218);
+  box-shadow: -2px 0 4px rgba(0, 0, 0, 0.1);
+  transition: all ease-out 200ms;
+}
+.inputWithCopyButton button:hover {
+  background-color: #aaa;
+  border-color: #aaa;
+}
+.inputWithCopyButton input {
+  border-radius: 20px;
+  padding-right: 55px;
+  width: calc(100% - 70px);
+  margin: 0;
+  flex: 1;
+  height: 100%;
+}
+#imageUploadinput {
+  display: none;
 }
 </style>

@@ -68,7 +68,6 @@ export default {
           )
         );
       } catch (e) {
-        console.log("failed");
         return this.personalData.photoURL;
       }
     },
@@ -101,6 +100,7 @@ export default {
         this.personalData.outTimeTo;
       this.personalData.photoURL =
         queryString.parseUrl(URL).query.photoUrl ||
+        localStorage.getItem("photoURL") ||
         (await this.getDefaultProfilePhoto());
       this.personalData.generateColorOfCode =
         queryString.parseUrl(URL).query.generateColorOfCode ||
@@ -152,6 +152,12 @@ export default {
   async mounted() {
     this.getPersonalDataFromCache();
     await this.getInformationFromUrl();
+    if (!localStorage.getItem("logined")) {
+      alert(
+        '1. 本系统仅供学习交流使用, 切勿做实际用途, 否则后果自负! \n2. 目前系统已经改版, 请点击"返校申请"进行数据修改!'
+      );
+      localStorage.setItem("logined", true);
+    }
   },
 };
 </script>
