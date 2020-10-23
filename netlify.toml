@@ -1,5 +1,3 @@
 [[redirects]]
     from = "/staticFile/image/people/*"
     to = "http://hello.xjtu.edu.cn/staticFile/image/people/:splat"
-    status = 200
-    force = true
