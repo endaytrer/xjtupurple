@@ -14,16 +14,6 @@
             );
           }
         "
-        @focusout="
-          (event) => {
-            getDefaultProfilePhoto(event.target.value).then((url) => {
-              $emit(
-                'update:modelValue',
-                modifiedPersonalDatas({ photoURL: url || modelValue.photoURL })
-              );
-            });
-          }
-        "
       />
       <span>姓名</span>
       <input
@@ -239,7 +229,6 @@ import VueSlider from "vue-slider-component";
 import "vue-slider-component/theme/antd.css";
 import ClipboardJS from "clipboard";
 import queryString from "query-string";
-import axios from "axios";
 export default {
   name: "Settings",
   components: { VueSlider, Banner },
@@ -295,28 +284,7 @@ export default {
     );
   },
   methods: {
-    async getDefaultProfilePhoto(stuNo) {
-      try {
-        let resp = await axios.get(
-          "/staticFile/image/people/" + stuNo + ".jpg",
-          {
-            crossdomain: true,
-            responseType: "arraybuffer",
-          }
-        );
-        return (
-          "data:image/png;base64," +
-          btoa(
-            new Uint8Array(resp.data).reduce(
-              (data, byte) => data + String.fromCharCode(byte),
-              ""
-            )
-          )
-        );
-      } catch (e) {
-        return "/default.jpg";
-      }
-    },
+    
     modifiedPersonalData(key, value) {
       let modifiedData = this.modelValue;
       modifiedData[key] = value;

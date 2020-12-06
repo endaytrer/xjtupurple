@@ -9,7 +9,6 @@
 <script>
 import Menu from "./components/Menu";
 import queryString from "query-string";
-import axios from "axios";
 export default {
   name: "App",
   components: {
@@ -49,29 +48,8 @@ export default {
         false
       );
     },
-    async getDefaultProfilePhoto() {
-      try {
-        let resp = await axios.get(
-          "/staticFile/image/people/" + this.personalData.stuNo + ".jpg",
-          {
-            crossdomain: true,
-            responseType: "arraybuffer",
-          }
-        );
-        return (
-          "data:image/png;base64," +
-          btoa(
-            new Uint8Array(resp.data).reduce(
-              (data, byte) => data + String.fromCharCode(byte),
-              ""
-            )
-          )
-        );
-      } catch (e) {
-        return this.personalData.photoURL;
-      }
-    },
-    async getInformationFromUrl() {
+    
+    getInformationFromUrl() {
       // 从URL获取信息
       const URL = document.URL;
       this.personalData.qrCode =
@@ -100,8 +78,7 @@ export default {
         this.personalData.outTimeTo;
       this.personalData.photoURL =
         queryString.parseUrl(URL).query.photoUrl ||
-        localStorage.getItem("photoURL") ||
-        (await this.getDefaultProfilePhoto());
+        localStorage.getItem("photoURL") || this.personalData.photoURL;
       this.personalData.generateColorOfCode =
         queryString.parseUrl(URL).query.generateColorOfCode ||
         this.personalData.generateColorOfCode;
@@ -149,9 +126,9 @@ export default {
     },
   },
 
-  async mounted() {
+  mounted() {
     this.getPersonalDataFromCache();
-    await this.getInformationFromUrl();
+    this.getInformationFromUrl();
     if (!localStorage.getItem("logined")) {
       alert(
         '1. 本系统仅供学习交流使用, 切勿做实际用途, 否则后果自负! \n2. 目前系统已经改版, 请点击"返校申请"进行数据修改!'
